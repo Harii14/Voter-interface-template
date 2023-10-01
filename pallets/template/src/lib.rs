@@ -174,6 +174,7 @@ pub mod pallet {
 			);
 			// check the status of the current election
 			// todo!()
+			ensure!(election.status, Error::<T>::InactiveElection);
 
 			ensure!(!election.voters_list.contains(&who), Error::<T>::DuplicateVoteNotAllowed);
 
@@ -190,15 +191,27 @@ pub mod pallet {
 
 				//Cast vote and update the storage
 				// todo!()
+				candidate_detail.total_aye_votes.push(who.clone());
+				Candidate::<T>::insert(&candidate, candidate_detail);
 
 				// update the current vote
 				// todo!()
+				election.voters_list.push(who.clone());
+				Election::<T>::insert(election_hash, election.clone());
 			} else {
 				// Initiate the new candidate info
 				// todo!()
+				let candidate_detail = CandidateInfo {
+					election_hash,
+					total_aye_votes: vec![who.clone()],
+					total_naye_votes: vec![],
+					};
+				Candidate::<T>::insert(&candidate, candidate_detail);
 
 				//Update the current vote and storage
 				// todo!()
+				election.voters_list.push(who.clone());
+				Election::<T>::insert(election_hash, election.clone());
 
 			}
 
